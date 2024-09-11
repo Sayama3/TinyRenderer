@@ -49,7 +49,7 @@ _deps
 CMakeUserPresets.json
 
 # Build folder wildcard
-*[Bb]uild*/
+*[Bb][Uu][Ii][Ll][Dd]*/
 
 # vs cache
 .vs/
