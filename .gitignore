@@ -50,6 +50,8 @@ CMakeUserPresets.json
 
 # Build folder wildcard
 *[Bb][Uu][Ii][Ll][Dd]*/
+[Ii]nt/
+[Oo]ut/
 
 # vs cache
 .vs/
