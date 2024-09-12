@@ -33,6 +33,13 @@ set(TR_SRC
 		include/TinyRenderer/Renderer/Framebuffer.hpp
 		include/TinyRenderer/Renderer/Light.hpp
 		src/Renderer/DefaultShaders.cpp
+		src/Renderer/Cubemap.cpp
+		include/TinyRenderer/Renderer/Cubemap.hpp
+		include/TinyRenderer/Core/Image.hpp
+		src/Core/Image.cpp
+		include/TinyRenderer/Core/Image.hpp
+		src/Core/Buffer.cpp
+		vendors_src/implement.cpp
 )
 
 

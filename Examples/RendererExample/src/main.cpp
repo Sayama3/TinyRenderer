@@ -11,16 +11,18 @@ int main(int argc, const char* argv[])
 	auto cube = tr::Primitives::CreateCube();
 	tr::StringShaderSource vertexShader = {tr::DefaultShaders::c_DefaultVert};
 	tr::StringShaderSource fragmentShader = {tr::DefaultShaders::c_DefaultFrag};
+
 	auto shader = tr::Shader::Create(&vertexShader, &fragmentShader);
-
-
-	shader->Bind();
+//	{
+//		auto cubemap = tr::Cubemap::Load(R"(cube2.jpg)");
+//		tr::Renderer::SetCubemap(cubemap);
+//	}
+	tr::Renderer::SetShader(shader);
 
 	while(app->ShouldRun())
 	{
 		app->BeginFrame();
 
-		tr::Renderer::SetShader(shader);
 		tr::Renderer::DrawMesh(cube, tr::Math::TRS({-2,-2,-10}, {}));
 
 		app->EndFrame();

@@ -3,6 +3,7 @@
 //
 
 #include "TinyRenderer/Renderer/Renderer.hpp"
+#include "TinyRenderer/Renderer/DefaultShaders.hpp"
 #include "glad/glad.h"
 
 namespace tr {
@@ -34,7 +35,7 @@ namespace tr {
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
-		// glEnable(GL_CULL_FACE);
+		glEnable(GL_CULL_FACE);
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 
@@ -49,10 +50,17 @@ namespace tr {
 		s_RenderData->CameraBuffer.CameraPosition = Vec4(s_Camera->Position, 1);
 		s_RenderData->CameraBuffer.ViewProjectionMatrix = s_Camera->GetViewProjectionMatrix();
 		s_RenderData->CameraUniformBuffer->SetData(s_RenderData->CameraBuffer);
+
+
+		auto vert = StringShaderSource{tr::DefaultShaders::c_CubemapVert};
+		auto frag = StringShaderSource{tr::DefaultShaders::c_CubemapFrag};
+		s_CubemapShader = Shader::Create(&vert, &frag);
+		s_CubemapMesh = Primitives::CreateCubemapMesh();
 	}
 
 	void Renderer::Terminate()
 	{
+		s_CubemapMesh.reset();
 		s_RenderData.reset();
 		s_Camera.reset();
 	}
@@ -90,5 +98,32 @@ namespace tr {
 
 		s_RenderData->CameraUniformBuffer->SetData(s_RenderData->CameraBuffer);
 
+	}
+
+	void Renderer::SetCubemap(std::shared_ptr<Cubemap> cubemap)
+	{
+		s_Cubemap = cubemap;
+	}
+
+	void Renderer::EndFrame() {
+		DrawCubemap();
+	}
+
+	void Renderer::DrawCubemap()
+	{
+		if(!s_Cubemap) return;
+
+		glFrontFace(GL_CW);
+		glDepthFunc(GL_LEQUAL);
+		auto vao = s_CubemapMesh->GetVertexArray();
+		s_CubemapShader->Bind();
+		s_Cubemap->Bind();
+		vao->Bind();
+		glDrawElements(GL_TRIANGLES, vao->GetDrawCount(), GL_UNSIGNED_INT, nullptr);
+
+		glDepthFunc(GL_LESS);
+		glFrontFace(GL_CCW);
+		if(s_Shader) s_Shader->Bind();
+		else s_CubemapShader->Unbind();
 	}
 } // tr

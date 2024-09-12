@@ -62,6 +62,7 @@ namespace tr {
 	class Primitives {
 	public:
 		static std::shared_ptr<Mesh> CreateCube();
+		static std::shared_ptr<Mesh> CreateCubemapMesh();
 	};
 
 } // tr

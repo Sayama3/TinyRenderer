@@ -31,6 +31,7 @@ namespace tr {
 
 	void Application::EndFrame()
 	{
+		Renderer::EndFrame();
 		m_Window->SwapBuffers();
 	}
 

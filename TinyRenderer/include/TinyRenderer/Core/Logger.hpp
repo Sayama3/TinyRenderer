@@ -30,4 +30,6 @@ namespace tr {
 #define TR_WARNING(...) tr::Logger::Log(tr::Logger::Type::Warning, __FUNCTION__, __FILE__ , __LINE__, std::format(__VA_ARGS__))
 #define TR_ERROR(...) tr::Logger::Log(tr::Logger::Type::Error, __FUNCTION__, __FILE__ , __LINE__, std::format(__VA_ARGS__))
 #define TR_ASSERT(condition, ...) if(!(condition)) TR_ERROR(__VA_ARGS__)
+#define TR_CHECK(condition, ...) if(!(condition)) TR_WARNING(__VA_ARGS__)
 #define TR_PROFILE_FUNCTION()
+#define TR_PROFILE_SCOPE(name)

@@ -133,4 +133,39 @@ void main()
 }
 )";
 
+	static inline constexpr const char* const c_CubemapVert = R"(
+#version 450 core
+
+layout(std140, binding = 0) uniform Camera
+{
+    mat4 u_ViewProjectionMatrix;
+    vec4 u_CameraPosition;
+    vec4 u_CameraDirection;
+};
+
+layout (location = 0) in vec3 v_Position;
+
+layout(location = 0) out vec3 v_TexCoords;
+
+void main()
+{
+    v_TexCoords = v_Position;
+    vec4 tmpPosition = u_ViewProjectionMatrix * vec4(v_Position, 0.0);
+    gl_Position = tmpPosition.xyww;
+}
+)";
+
+	static inline constexpr const char* const c_CubemapFrag = R"(
+#version 450 core
+
+layout(binding = 0) uniform samplerCube u_Skybox;
+
+layout(location = 0) in vec3 v_TexCoords;
+layout(location = 0) out vec4 o_Color;
+
+void main(void) {
+	o_Color = texture(u_Skybox, v_TexCoords);
+}
+
+)";
 }

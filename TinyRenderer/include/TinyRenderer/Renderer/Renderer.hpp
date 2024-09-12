@@ -5,6 +5,7 @@
 #pragma once
 
 #include "TinyRenderer/Renderer/Shader.hpp"
+#include "TinyRenderer/Renderer/Cubemap.hpp"
 #include "TinyRenderer/Renderer/Mesh.hpp"
 #include "TinyRenderer/Renderer/Light.hpp"
 #include "TinyRenderer/Renderer/UniformBuffer.hpp"
@@ -70,13 +71,20 @@ namespace tr {
 		static void Terminate();
 		static void Clear();
 
+		static void SetCubemap(std::shared_ptr<Cubemap> cubemap);
 		static void SetCamera(const Camera& camera);
 		static void SetShader(std::shared_ptr<Shader> shader);
 		static void DrawMesh(std::shared_ptr<Mesh> mesh, const Mat4& modelMatrix);
+
+		static void EndFrame();
+		static void DrawCubemap();
 	private:
 		static inline std::unique_ptr<Camera> s_Camera{nullptr};
+		static inline std::shared_ptr<Cubemap> s_Cubemap{nullptr};
+		static inline std::shared_ptr<Mesh> s_CubemapMesh{nullptr};
 		static inline std::unique_ptr<RendererData> s_RenderData{nullptr};
 		static inline std::shared_ptr<Shader> s_Shader{nullptr};
+		static inline std::shared_ptr<Shader> s_CubemapShader{nullptr};
 	};
 
 } // tr

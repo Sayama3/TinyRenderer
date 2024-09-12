@@ -13,37 +13,34 @@ namespace tr {
 
 	// Non Owning Buffer
 	struct Buffer {
+	public:
 		Buffer() = default;
 		Buffer(const Buffer&) = default;
 		Buffer& operator=(const Buffer&) = default;
 		~Buffer() = default;
+		Buffer(void* data, uint64_t size);
+		Buffer(uint64_t size);
+
 		template<typename T>
-		Buffer(T* data, uint64_t count) : data(reinterpret_cast<uint8_t*>(data)), size(count * sizeof(T)) {}
-		explicit Buffer(void* data, uint64_t size) : data(reinterpret_cast<uint8_t *>(data)), size(size) {}
+		Buffer(T* data, uint64_t count);
+	public:
+		static Buffer Copy(const Buffer& other);
 
-		void Allocate(uint64_t size)
-		{
-			Release();
-
-			this->data = static_cast<uint8_t*>(malloc(size));
-			this->size = size;
-		}
-
-		void Release()
-		{
-			if (this->data)
-			{
-				free(this->data);
-				this->data = nullptr;
-				this->size = 0u;
-			}
-		}
+		void Allocate(uint64_t size);
+		void Release();
+		void Clear();
 
 		template<typename T>
 		T* As();
 
 		template<typename T>
 		const T* As() const;
+
+		template<typename T>
+		T& At(uint64_t index);
+
+		template<typename T>
+		const T& At(uint64_t index) const;
 
 		template<typename T>
 		T& operator[](uint64_t i);
@@ -54,6 +51,33 @@ namespace tr {
 		uint8_t* data = nullptr;
 		uint64_t size = 0;
 	};
+
+	template<typename T>
+	Buffer::Buffer(T *data, uint64_t count) : data(reinterpret_cast<uint8_t*>(data)), size(count * sizeof(T))
+	{
+	}
+
+	template<typename T>
+	const T &Buffer::At(uint64_t index) const {
+		TR_ASSERT(data, "Buffer is empty - has no initialized data.");
+		TR_ASSERT(size >= (index+1) * sizeof(T), "Cannot access index {0} for type {1}. Buffer size: {2}. Required size: {3}.",
+						index,
+						typeid(T).name(),
+						size,
+						(index+1) * sizeof(T));
+		return ((T*)data)[index];
+	}
+
+	template<typename T>
+	T &Buffer::At(uint64_t index) {
+		TR_ASSERT(data, "Buffer is empty - has no initialized data.");
+		TR_ASSERT(size >= (index+1) * sizeof(T), "Cannot access index {0} for type {1}. Buffer size: {2}. Required size: {3}.",
+						index,
+						typeid(T).name(),
+						size,
+						(index+1) * sizeof(T));
+		return ((T*)data)[index];
+	}
 
 	template<typename T>
 	T *Buffer::As() {
