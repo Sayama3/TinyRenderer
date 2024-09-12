@@ -1,6 +1,0 @@
-#ifndef TINYRENDERER_LIBRARY_H
-#define TINYRENDERER_LIBRARY_H
-
-void hello();
-
-#endif //TINYRENDERER_LIBRARY_H
