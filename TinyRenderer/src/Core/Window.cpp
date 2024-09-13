@@ -204,6 +204,16 @@ namespace tr {
 		glfwSetWindowShouldClose(reinterpret_cast<GLFWwindow*>(m_Window), true);
 	}
 
+	uint32_t Window::GetWidth() const
+	{
+		return m_Data.Width;
+	}
+
+	uint32_t Window::GetHeight() const
+	{
+		return m_Data.Height;
+	}
+
 	void Window::SetEventCallback(const EventCallBackFn &callback)
 	{
 		m_Data.EventCallback = callback;

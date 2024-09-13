@@ -54,7 +54,7 @@ file(GLOB_RECURSE TR_VENDORS_SRC CONFIGURE_DEPENDS vendors_src/*.cpp vendors_src
 add_library(${LibraryName} STATIC ${TR_SRC} ${TR_VENDORS_SRC})
 
 target_include_directories(${LibraryName} PUBLIC  include)
-target_include_directories(${LibraryName} PRIVATE vendors_include)
+target_include_directories(${LibraryName} PUBLIC vendors_include)
 target_include_directories(${LibraryName} PRIVATE src)
 
 target_link_libraries(${LibraryName} PRIVATE glfw imgui)

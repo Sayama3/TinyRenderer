@@ -38,13 +38,19 @@ namespace tr {
 	void Application::BeginFrame()
 	{
 		m_Window->PollEvents();
-		Clear();
 	}
 
 	void Application::EndFrame()
 	{
-		Renderer::EndFrame();
 		m_Window->SwapBuffers();
+	}
+	uint32_t Application::GetWindowWidth() const
+	{
+		return m_Window->GetWidth();
+	}
+	uint32_t Application::GetWindowHeight() const
+	{
+		return m_Window->GetHeight();
 	}
 
 	void Application::Close()
@@ -60,10 +66,6 @@ namespace tr {
 	void Application::TerminateRenderer()
 	{
 		Renderer::Terminate();
-	}
-
-	void Application::Clear() {
-		Renderer::Clear();
 	}
 
 	void Application::OnEvent(Event &e)

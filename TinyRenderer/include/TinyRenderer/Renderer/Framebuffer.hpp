@@ -9,6 +9,14 @@
 
 namespace tr {
 
+	enum class FramebufferTarget : int8_t
+	{
+		None = -1,
+		ReadAndWrite = 0,
+		Read,
+		Write,
+	};
+
 	enum class FramebufferTextureFormat
 	{
 		None = 0,
@@ -52,6 +60,7 @@ namespace tr {
 
 		FramebufferSpecification() = default;
 		inline FramebufferSpecification(uint32_t width, uint32_t height) : Width(width), Height(height) {}
+		inline FramebufferSpecification(uint32_t width, uint32_t height, std::initializer_list<FramebufferTextureSpecification> attachments) : Width(width), Height(height), Attachements(std::move(attachments)) {}
 	};
 
 	class Framebuffer
@@ -61,9 +70,12 @@ namespace tr {
 	public:
 		Framebuffer(const FramebufferSpecification& specification);
 		~Framebuffer();
+	public:
+		static std::shared_ptr<Framebuffer> Create(const FramebufferSpecification& specification) {return  std::make_shared<Framebuffer>(specification);}
+	public:
 		const FramebufferSpecification& GetSpecification() const;
 
-		void Bind();
+		void Bind(FramebufferTarget target = FramebufferTarget::ReadAndWrite);
 		void Unbind();
 		void Resize(uint32_t width, uint32_t height);
 		int ReadPixel(uint32_t index, int x, int y);
@@ -81,6 +93,7 @@ namespace tr {
 		uint32_t m_DepthAttachment = 0;
 		std::vector<FramebufferTextureSpecification> m_ColorAttachmentSpecifications;
 		FramebufferTextureSpecification m_DepthAttachmentSpecification = FramebufferTextureFormat::None;
+		FramebufferTarget m_BindTarget{FramebufferTarget::None};
 	};
 
 } // tr

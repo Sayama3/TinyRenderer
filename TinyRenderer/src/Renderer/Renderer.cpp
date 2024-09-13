@@ -105,6 +105,16 @@ namespace tr {
 		s_Cubemap = cubemap;
 	}
 
+	void Renderer::SetFramebuffer(std::shared_ptr<Framebuffer> framebuffer) {
+		if(framebuffer) {
+			s_Framebuffer = framebuffer;
+			s_Framebuffer->Bind();
+		} else {
+			s_Framebuffer->Unbind();
+			s_Framebuffer = nullptr;
+		}
+	}
+
 	void Renderer::EndFrame() {
 		DrawCubemap();
 	}

@@ -25,6 +25,8 @@ namespace tr {
 		void BeginFrame();
 		void EndFrame();
 
+		[[nodiscard]] uint32_t GetWindowWidth() const;
+		[[nodiscard]] uint32_t GetWindowHeight() const;
 	public:
 		void AddCallback(Callback* fn);
 		void RemoveCallback(Callback* fn);
@@ -34,7 +36,6 @@ namespace tr {
 	private:
 		void InitializeRenderer();
 		void TerminateRenderer();
-		void Clear();
 	private:
 		std::vector<Callback*> m_Events;
 		std::unique_ptr<Window> m_Window{nullptr};

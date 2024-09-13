@@ -56,6 +56,9 @@ namespace tr {
 		void SetVSync(bool state);
 		void Close();
 
+		[[nodiscard]] uint32_t GetWidth() const;
+		[[nodiscard]] uint32_t GetHeight() const;
+
 		void SetEventCallback(const EventCallBackFn& callback);
 
 		[[nodiscard]] bool ShouldClose() const;

@@ -9,6 +9,7 @@
 #include "TinyRenderer/Renderer/Mesh.hpp"
 #include "TinyRenderer/Renderer/Light.hpp"
 #include "TinyRenderer/Renderer/UniformBuffer.hpp"
+#include "TinyRenderer/Renderer/Framebuffer.hpp"
 
 #include "TinyRenderer/Core/Camera.hpp"
 
@@ -71,6 +72,7 @@ namespace tr {
 		static void Terminate();
 		static void Clear();
 
+		static void SetFramebuffer(std::shared_ptr<Framebuffer> framebuffer);
 		static void SetCubemap(std::shared_ptr<Cubemap> cubemap);
 		static void SetCamera(const Camera& camera);
 		static void SetShader(std::shared_ptr<Shader> shader);
@@ -87,6 +89,7 @@ namespace tr {
 		static inline std::unique_ptr<RendererData> s_RenderData{nullptr};
 		static inline std::shared_ptr<Shader> s_Shader{nullptr};
 		static inline std::shared_ptr<Shader> s_CubemapShader{nullptr};
+		static inline std::shared_ptr<Framebuffer> s_Framebuffer{nullptr};
 	};
 
 } // tr

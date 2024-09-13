@@ -22,3 +22,4 @@
 #include "TinyRenderer/Renderer/Shader.hpp"
 #include "TinyRenderer/Renderer/DefaultShaders.hpp"
 #include "TinyRenderer/Renderer/Texture.hpp"
+#include "TinyRenderer/Renderer/Framebuffer.hpp"

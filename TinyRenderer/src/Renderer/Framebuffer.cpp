@@ -208,15 +208,48 @@ namespace tr {
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 
-	void Framebuffer::Bind() {
+	void Framebuffer::Bind(FramebufferTarget target) {
 		TR_PROFILE_FUNCTION();
-		glBindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
+		if(target == FramebufferTarget::None)
+		{
+			Unbind();
+			return;
+		}
+		if(m_BindTarget != FramebufferTarget::None){
+			Unbind();
+		}
+
+		switch (target) {
+			case FramebufferTarget::ReadAndWrite:
+				glBindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
+				break;
+			case FramebufferTarget::Read:
+				glBindFramebuffer(GL_READ_FRAMEBUFFER, m_RendererID);
+				break;
+			case FramebufferTarget::Write:
+				glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_RendererID);
+				break;
+		}
+		m_BindTarget = target;
 		glViewport(0, 0, m_Specification.Width, m_Specification.Height);
 	}
 
 	void Framebuffer::Unbind() {
 		TR_PROFILE_FUNCTION();
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		switch (m_BindTarget) {
+			case FramebufferTarget::ReadAndWrite:
+				glBindFramebuffer(GL_FRAMEBUFFER, 0);
+				break;
+			case FramebufferTarget::Read:
+				glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+				break;
+			case FramebufferTarget::Write:
+				glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+				break;
+			default:
+				break;
+		}
+		m_BindTarget = FramebufferTarget::None;
 	}
 
 	uint32_t Framebuffer::GetColorAttachmentRendererID(uint32_t index) const {
