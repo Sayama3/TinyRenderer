@@ -36,7 +36,7 @@ namespace tr {
 		[[nodiscard]] Vec3 GetForward() const {return Rotation * Vec3{0,0,1};}
 	public:
 		Vec3 Position{};
-		Quat Rotation{};
+		Quat Rotation{glm::identity<Quat>()};
 
 		/// FOV in radians
 		float RadFov = glm::radians(60.0f);

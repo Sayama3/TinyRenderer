@@ -4,27 +4,41 @@
 
 #include "TinyRenderer/Core/Window.hpp"
 #include "TinyRenderer/Core/Logger.hpp"
+#include "TinyRenderer/Events/ApplicationEvent.hpp"
+#include "TinyRenderer/Events/KeyEvent.hpp"
+#include "TinyRenderer/Events/MouseEvent.hpp"
+
 #include <cstdint>
 #include <string>
 #include <iostream>
 
-#include "glad/glad.h"
+#include <glad/glad.h>
 
 #ifndef GLFW_INCLUDE_NONE
 #define GLFW_INCLUDE_NONE 1
 #endif
 
-#include "GLFW/glfw3.h"
+#include <GLFW/glfw3.h>
 
 namespace tr {
+	enum GLFWKeyState : int {
+		PRESS = GLFW_PRESS,
+		RELEASE = GLFW_RELEASE,
+		REPEAT = GLFW_REPEAT,
+	};
 
-	static void glfw_error_callback(int error, const char* description)
+	static void glfw_error_callback(int error_code, const char* description)
 	{
-		std::cerr << "GLFW Error " << error << " : " << description << std::endl;
+		TR_ERROR("GLFW Error ({0}): {1}", error_code, description);
 	}
 
 	Window::Window(WindowProps props) : m_WindowProps(std::move(props))
 	{
+		m_Data.Title = m_WindowProps.Title;
+		m_Data.Width = m_WindowProps.Width;
+		m_Data.Height = m_WindowProps.Height;
+		m_Data.Minified = false;
+
 		TR_TRACE("Creating window {}", m_WindowProps.Title);
 		glfwSetErrorCallback(glfw_error_callback);
 
@@ -43,14 +57,122 @@ namespace tr {
 			return;
 		}
 
-		glfwMakeContextCurrent(reinterpret_cast<GLFWwindow*>(m_Window));
-		int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-		TR_INFO("glad loading status: {0}", status);
+		// Set OpenGL Context
+		{
+			glfwMakeContextCurrent(reinterpret_cast<GLFWwindow *>(m_Window));
+			int status = gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
+			TR_INFO("glad loading status: {0}", status);
 
-		TR_INFO("OpenGL Info:");
-		TR_INFO("  Vendor: {0}", (const char*)glGetString(GL_VENDOR));
-		TR_INFO("  Renderer: {0}", (const char*)glGetString(GL_RENDERER));
-		TR_INFO("  Version: {0}", (const char*)glGetString(GL_VERSION));
+			TR_INFO("OpenGL Info:");
+			TR_INFO("  Vendor: {0}", (const char *) glGetString(GL_VENDOR));
+			TR_INFO("  Renderer: {0}", (const char *) glGetString(GL_RENDERER));
+			TR_INFO("  Version: {0}", (const char *) glGetString(GL_VERSION));
+		}
+
+		glfwSetWindowUserPointer(GetNative<GLFWwindow>(), &m_Data);
+		SetVSync(m_Data.VSync);
+
+		// Set GLFW Callbacks
+		glfwSetFramebufferSizeCallback(GetNative<GLFWwindow>(), [](GLFWwindow* window, int width, int height)
+		{
+			Window::Data& data = *(Window::Data*)glfwGetWindowUserPointer(window);
+			data.Width = width;
+			data.Height = height;
+
+			WindowResizeEvent event(width, height);
+			data.EventCallback(event);
+		});
+
+		glfwSetWindowIconifyCallback(GetNative<GLFWwindow>(), [](GLFWwindow* window, int iconify)
+		{
+			Window::Data& data = *(Window::Data*)glfwGetWindowUserPointer(window);
+			data.Minified = iconify == GLFW_TRUE;
+
+			WindowMinifyEvent event(iconify == GLFW_TRUE);
+			data.EventCallback(event);
+			;        });
+
+		glfwSetWindowCloseCallback(GetNative<GLFWwindow>(), [](GLFWwindow* window)
+		{
+			Window::Data& data = *(Window::Data*)glfwGetWindowUserPointer(window);
+
+			WindowCloseEvent event;
+			data.EventCallback(event);
+		});
+
+		glfwSetKeyCallback(GetNative<GLFWwindow>(), [](GLFWwindow* window, int key, int scancode, int action, int mods)
+		{
+			Window::Data& data = *(Window::Data*)glfwGetWindowUserPointer(window);
+
+			switch ((GLFWKeyState)action) {
+				case GLFWKeyState::PRESS:
+				{
+					KeyPressedEvent event(key, 0);
+					data.EventCallback(event);
+					break;
+				}
+				case GLFWKeyState::RELEASE:
+				{
+					KeyReleasedEvent event(key);
+					data.EventCallback(event);
+					break;
+				}
+				case GLFWKeyState::REPEAT:
+				{
+					// Can be extract if we want the number of repeat/
+					KeyPressedEvent event(key, 1);
+					data.EventCallback(event);
+					break;
+				}
+			}
+		});
+
+		glfwSetCharCallback(GetNative<GLFWwindow>(), [](GLFWwindow* window, unsigned int codepoint){
+			Window::Data& data = *(Window::Data*)glfwGetWindowUserPointer(window);
+
+			KeyTypedEvent event(codepoint);
+			data.EventCallback(event);
+		});
+
+		glfwSetMouseButtonCallback(GetNative<GLFWwindow>(), [](GLFWwindow* window, int button, int action, int mods)
+		{
+			Window::Data& data = *(Window::Data*)glfwGetWindowUserPointer(window);
+
+			switch ((GLFWKeyState)action) {
+				case GLFWKeyState::PRESS:
+				{
+					MouseButtonPressedEvent event(button);
+					data.EventCallback(event);
+					break;
+				}
+				case GLFWKeyState::RELEASE:
+				{
+					MouseButtonReleasedEvent event(button);
+					data.EventCallback(event);
+					break;
+				}
+				case REPEAT:
+				{
+					MouseButtonRepeatEvent event(button);
+					data.EventCallback(event);
+					break;
+				}
+			}
+		});
+
+		glfwSetScrollCallback(GetNative<GLFWwindow>(), [](GLFWwindow* window, double xoffset, double yoffset){
+			Window::Data& data = *(Window::Data*)glfwGetWindowUserPointer(window);
+
+			MouseScrolledEvent event(static_cast<float>(xoffset), static_cast<float>(yoffset));
+			data.EventCallback(event);
+		});
+
+		glfwSetCursorPosCallback(GetNative<GLFWwindow>(), [](GLFWwindow* window, double xpos, double ypos){
+			Window::Data& data = *(Window::Data*)glfwGetWindowUserPointer(window);
+
+			MouseMovedEvent event(static_cast<float>(xpos), static_cast<float>(ypos));
+			data.EventCallback(event);
+		});
 	}
 
 	Window::~Window()
@@ -80,5 +202,10 @@ namespace tr {
 	void Window::Close() {
 		TR_TRACE("Closing window {}", m_WindowProps.Title);
 		glfwSetWindowShouldClose(reinterpret_cast<GLFWwindow*>(m_Window), true);
+	}
+
+	void Window::SetEventCallback(const EventCallBackFn &callback)
+	{
+		m_Data.EventCallback = callback;
 	}
 } // tr

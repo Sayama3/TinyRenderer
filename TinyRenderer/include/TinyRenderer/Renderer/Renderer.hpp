@@ -76,6 +76,8 @@ namespace tr {
 		static void SetShader(std::shared_ptr<Shader> shader);
 		static void DrawMesh(std::shared_ptr<Mesh> mesh, const Mat4& modelMatrix);
 
+		static Camera GetCamera();
+
 		static void EndFrame();
 		static void DrawCubemap();
 	private:

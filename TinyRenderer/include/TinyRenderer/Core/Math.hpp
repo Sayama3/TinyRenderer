@@ -17,14 +17,17 @@
 #include <cmath>
 #include <cstdint>
 
-using Mat4 = glm::mat4;
-using Mat3 = glm::mat3;
+namespace tr
+{
+	using Mat4 = glm::mat4;
+	using Mat3 = glm::mat3;
 
-using Quat = glm::quat;
+	using Quat = glm::quat;
 
-using Vec4 = glm::vec4;
-using Vec3 = glm::vec3;
-using Vec2 = glm::vec2;
+	using Vec4 = glm::vec4;
+	using Vec3 = glm::vec3;
+	using Vec2 = glm::vec2;
+}
 
 namespace tr::Math
 {

@@ -40,6 +40,12 @@ set(TR_SRC
 		include/TinyRenderer/Core/Image.hpp
 		src/Core/Buffer.cpp
 		vendors_src/implement.cpp
+		include/TinyRenderer/Core/KeyCodes.hpp
+		src/Core/Events.cpp
+		include/TinyRenderer/Events/Event.hpp
+		include/TinyRenderer/Core/MouseButtonCodes.hpp
+		include/TinyRenderer/Core/Utility.hpp
+		include/TinyRenderer/Events/Callback.hpp
 )
 
 

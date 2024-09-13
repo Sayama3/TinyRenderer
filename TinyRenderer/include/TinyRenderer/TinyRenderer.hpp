@@ -7,6 +7,16 @@
 #include "TinyRenderer/Core/Application.hpp"
 #include "TinyRenderer/Core/Window.hpp"
 #include "TinyRenderer/Core/Math.hpp"
+#include "TinyRenderer/Core/KeyCodes.hpp"
+#include "TinyRenderer/Core/MouseButtonCodes.hpp"
+#include "TinyRenderer/Core/Utility.hpp"
+
+#include "TinyRenderer/Events/Callback.hpp"
+#include "TinyRenderer/Events/Event.hpp"
+#include "TinyRenderer/Events/ApplicationEvent.hpp"
+#include "TinyRenderer/Events/MouseEvent.hpp"
+#include "TinyRenderer/Events/KeyEvent.hpp"
+
 #include "TinyRenderer/Renderer/Renderer.hpp"
 #include "TinyRenderer/Renderer/Mesh.hpp"
 #include "TinyRenderer/Renderer/Shader.hpp"

@@ -8,6 +8,8 @@
 #include <string>
 #include <utility>
 
+#include "TinyRenderer/Events/Event.hpp"
+
 namespace tr {
 
 	struct WindowProps {
@@ -34,6 +36,16 @@ namespace tr {
 
 	class Window {
 	public:
+		struct Data
+		{
+			std::string Title;
+			uint32_t Width, Height;
+			bool Minified;
+			bool VSync;
+
+			EventCallBackFn  EventCallback = nullptr;
+		};
+	public:
 		Window(WindowProps props);
 		~Window();
 		Window(const Window&) = delete;
@@ -44,10 +56,20 @@ namespace tr {
 		void SetVSync(bool state);
 		void Close();
 
+		void SetEventCallback(const EventCallBackFn& callback);
+
 		[[nodiscard]] bool ShouldClose() const;
+		[[nodiscard]] void* GetNativeWindow() {return m_Window;}
+		[[nodiscard]] const void* GetNativeWindow() const {return m_Window;}
+
+		template<typename T>
+		[[nodiscard]] inline T* GetNative() {return static_cast<T*>(m_Window);}
+		template<typename T>
+		[[nodiscard]] inline const T* GetNative() const {return static_cast<const T*>(m_Window);}
 	private:
 		void* m_Window = nullptr;
 		WindowProps m_WindowProps;
+		Data m_Data;
 	};
 
 } // tr

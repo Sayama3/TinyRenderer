@@ -126,4 +126,9 @@ namespace tr {
 		if(s_Shader) s_Shader->Bind();
 		else s_CubemapShader->Unbind();
 	}
+
+	Camera Renderer::GetCamera() {
+		if(s_Camera) return *s_Camera;
+		else return {};
+	}
 } // tr

@@ -5,6 +5,9 @@
 #pragma once
 
 #include "Window.hpp"
+#include "TinyRenderer/Events/Event.hpp"
+#include "TinyRenderer/Events/Callback.hpp"
+#include "TinyRenderer/Events/ApplicationEvent.hpp"
 #include <memory>
 
 namespace tr {
@@ -21,11 +24,19 @@ namespace tr {
 
 		void BeginFrame();
 		void EndFrame();
+
+	public:
+		void AddCallback(Callback* fn);
+		void RemoveCallback(Callback* fn);
+	private:
+		void OnEvent(Event& e);
+		bool OnWindowResize(tr::WindowResizeEvent &e);
 	private:
 		void InitializeRenderer();
 		void TerminateRenderer();
 		void Clear();
 	private:
+		std::vector<Callback*> m_Events;
 		std::unique_ptr<Window> m_Window{nullptr};
 	};
 
