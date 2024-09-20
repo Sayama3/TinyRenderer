@@ -9,6 +9,7 @@
 #include "TinyRenderer/Core/Math.hpp"
 #include "TinyRenderer/Core/KeyCodes.hpp"
 #include "TinyRenderer/Core/MouseButtonCodes.hpp"
+#include "TinyRenderer/Core/Random.hpp"
 #include "TinyRenderer/Core/Utility.hpp"
 
 #include "TinyRenderer/Events/Callback.hpp"
@@ -22,4 +23,5 @@
 #include "TinyRenderer/Renderer/Shader.hpp"
 #include "TinyRenderer/Renderer/DefaultShaders.hpp"
 #include "TinyRenderer/Renderer/Texture.hpp"
+#include "TinyRenderer/Renderer/SSBO.hpp"
 #include "TinyRenderer/Renderer/Framebuffer.hpp"

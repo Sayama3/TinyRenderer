@@ -77,11 +77,13 @@ namespace tr {
 		static void SetCamera(const Camera& camera);
 		static void SetShader(std::shared_ptr<Shader> shader);
 		static void DrawMesh(std::shared_ptr<Mesh> mesh, const Mat4& modelMatrix);
+		static void DrawMesh(std::shared_ptr<Mesh> mesh, uint64_t count);
 
 		static Camera GetCamera();
-
 		static void EndFrame();
+
 		static void DrawCubemap();
+
 	private:
 		static inline std::unique_ptr<Camera> s_Camera{nullptr};
 		static inline std::shared_ptr<Cubemap> s_Cubemap{nullptr};
@@ -90,6 +92,7 @@ namespace tr {
 		static inline std::shared_ptr<Shader> s_Shader{nullptr};
 		static inline std::shared_ptr<Shader> s_CubemapShader{nullptr};
 		static inline std::shared_ptr<Framebuffer> s_Framebuffer{nullptr};
+
 	};
 
 } // tr

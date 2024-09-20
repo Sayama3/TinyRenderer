@@ -46,6 +46,10 @@ set(TR_SRC
 		include/TinyRenderer/Core/MouseButtonCodes.hpp
 		include/TinyRenderer/Core/Utility.hpp
 		include/TinyRenderer/Events/Callback.hpp
+		src/Renderer/SSBO.cpp
+		include/TinyRenderer/Renderer/SSBO.hpp
+		include/TinyRenderer/Core/Random.hpp
+		src/Core/Random.cpp
 )
 
 

@@ -22,7 +22,10 @@ namespace tr {
 		Buffer(uint64_t size);
 
 		template<typename T>
-		Buffer(T* data, uint64_t count);
+		static Buffer Create(T* data, uint64_t count)
+		{
+			return Buffer{data, count * sizeof(T)};
+		}
 	public:
 		static Buffer Copy(const Buffer& other);
 
@@ -51,11 +54,6 @@ namespace tr {
 		uint8_t* data = nullptr;
 		uint64_t size = 0;
 	};
-
-	template<typename T>
-	Buffer::Buffer(T *data, uint64_t count) : data(reinterpret_cast<uint8_t*>(data)), size(count * sizeof(T))
-	{
-	}
 
 	template<typename T>
 	const T &Buffer::At(uint64_t index) const {

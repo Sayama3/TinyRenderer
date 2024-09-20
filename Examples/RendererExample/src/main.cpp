@@ -4,6 +4,8 @@
 
 #include "TinyRenderer/TinyRenderer.hpp"
 
+#include <algorithm>
+#include <random>
 #include <glad/glad.h>
 
 class MovementCallback : public tr::Callback
@@ -79,6 +81,21 @@ public:
 int main(int argc, const char* argv[]) {
 	MovementCallback movement;
 	ResizeCallback resize;
+	std::vector<glm::mat4> m_CubeInstances{500};
+
+	//std::for_each(std::execution::par_unseq, m_CubeInstances.begin(), m_CubeInstances.end(), [](glm::mat4& matrix)
+
+	for(glm::mat4& matrix : m_CubeInstances)
+	{
+		tr::Random random(std::time(nullptr));
+
+		matrix = glm::identity<glm::mat4>();
+		glm::translate(matrix, {random.FValue(-10.f,10.f), random.FValue(-10.f,10.f), random.FValue(-10.f,10.f)});
+		glm::rotate(matrix,random.FValue(-glm::pi<float>(),-glm::pi<float>()), glm::normalize(glm::vec3{random.FValue(-10.f,10.f), random.FValue(-10.f,10.f), random.FValue(-10.f,10.f)}));
+		glm::scale(matrix, {random.FValue(0.5,2),random.FValue(0.5,2),random.FValue(0.5,2)});
+	}
+	//);
+
 	auto *app = new tr::Application(tr::WindowProps{});
 	app->AddCallback(&movement);
 
@@ -87,6 +104,9 @@ int main(int argc, const char* argv[]) {
 	tr::StringShaderSource fragmentShader = {tr::DefaultShaders::c_DefaultFrag};
 
 	auto shader = tr::Shader::Create(&vertexShader, &fragmentShader);
+
+	auto ssbo = tr::SSBO::Create(m_CubeInstances, tr::SSBOUsage::DynamicDraw);
+	ssbo->Bind(1);
 
 //	{
 //		auto cubemap = tr::Cubemap::Load(R"(cube2.jpg)");
@@ -120,11 +140,12 @@ int main(int argc, const char* argv[]) {
 		camera.Rotation = glm::normalize(camera.Rotation);
 		camera.Position += camera.Rotation * movement.movement;
 		tr::Renderer::SetCamera(camera);
-		tr::Renderer::DrawMesh(cube, tr::Math::TRS({-2, -2, -10}, {}));
+		tr::Renderer::DrawMesh(cube, m_CubeInstances.size());
 
 		tr::Renderer::EndFrame();
 		app->EndFrame();
 	}
+	ssbo.reset();
 
 	app->RemoveCallback(&resize);
 	resize.m_Framebuffer.reset();

@@ -88,6 +88,16 @@ namespace tr {
 		glDrawElements(GL_TRIANGLES, vao->GetDrawCount(), GL_UNSIGNED_INT, nullptr);
 	}
 
+	void Renderer::DrawMesh(std::shared_ptr<Mesh> mesh, uint64_t count) {
+		if(!mesh) return;
+		auto vao = mesh->GetVertexArray();
+		if(!vao) return;
+
+		vao->Bind();
+
+		glDrawElementsInstanced(GL_TRIANGLES, vao->GetDrawCount(), GL_UNSIGNED_INT, nullptr, count);
+	}
+
 	void Renderer::SetCamera(const Camera &camera) {
 
 		*s_Camera = camera;

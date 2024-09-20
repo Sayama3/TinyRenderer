@@ -6,7 +6,7 @@
 
 namespace tr
 {
-	Buffer::Buffer(void *data, uint64_t size) : data(reinterpret_cast<uint8_t *>(data)), size(size) {}
+	Buffer::Buffer(void* data, uint64_t size) : data(reinterpret_cast<uint8_t *>(data)), size(size) {}
 
 	Buffer::Buffer(uint64_t size) {
 		Allocate(size);

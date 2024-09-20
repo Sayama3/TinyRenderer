@@ -39,11 +39,16 @@ layout(std140, binding = 0) uniform Camera
     vec4 u_CameraDirection;
 };
 
-layout(std140, binding = 1) uniform Model
+//layout(std140, binding = 1) uniform Model
+//{
+//    mat4 u_ModelMatrix;
+//    mat4 u_NormalMatrix;
+//    int u_EntityId;
+//};
+
+layout(std140, binding = 1) buffer Model
 {
-    mat4 u_ModelMatrix;
-    mat4 u_NormalMatrix;
-    int u_EntityId;
+	mat4 u_ModelMatrices[];
 };
 
 //layout(std140, binding = 2) uniform Lights
@@ -63,10 +68,11 @@ layout (location = 3) out vec4 v_Color;
 
 
 void main() {
-    gl_Position = u_ViewProjectionMatrix * u_ModelMatrix * vec4(a_Position, 1.0);
+//    gl_Position = u_ViewProjectionMatrix * u_ModelMatrix * vec4(a_Position, 1.0);
+    gl_Position = u_ViewProjectionMatrix * u_ModelMatrices[gl_InstanceID] * vec4(a_Position, 1.0);
 
-    v_Position = (u_ModelMatrix * vec4(a_Position, 1.0)).xyz;
-    v_Normal = normalize((u_NormalMatrix * vec4(a_Normal, 1.0)).xyz);
+    v_Position = (u_ModelMatrices[gl_InstanceID] * vec4(a_Position, 1.0)).xyz;
+    v_Normal = normalize((transpose(inverse(u_ModelMatrices[gl_InstanceID])) * vec4(a_Normal, 0.0)).xyz);
     v_TexCoord = a_TexCoord;
     v_Color = a_Color;
 }
@@ -106,11 +112,16 @@ layout(std140, binding = 0) uniform Camera
     vec4 u_CameraDirection;
 };
 
-layout(std140, binding = 1) uniform Model
+//layout(std140, binding = 1) uniform Model
+//{
+//    mat4 u_ModelMatrix;
+//    mat4 u_NormalMatrix;
+//    int u_EntityId;
+//};
+
+layout(std140, binding = 1) buffer Model
 {
-    mat4 u_ModelMatrix;
-    mat4 u_NormalMatrix;
-    int u_EntityId;
+	mat4 u_ModelMatrices[];
 };
 
 //layout(std140, binding = 2) uniform Lights
@@ -129,7 +140,8 @@ layout (location = 0) out vec4 o_Color;
 
 void main()
 {
-	o_Color = vec4(0.8, 0.3, 0.2, 1);
+//	o_Color = vec4(0.8, 0.3, 0.2, 1);
+	o_Color = v_Color;
 }
 )";
 
